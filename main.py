@@ -193,6 +193,10 @@ async def shuffle(ctx):
 @client.command()
 async def loop(ctx):
     loops[ctx.guild.id] = not loops[ctx.guild.id]
+    if loops[ctx.guild.id]:
+        await ctx.send("We will now loop the current song")
+    else:
+        await ctx.send("The time loop is now broken")
 
 
 client.run('Nzg1MjczMzUzNzQwNjE1NzM0.GcjwF3.E1c0s-BR6Lp81-GbJ85oJJ2Jz1VUhtG4LJ9jVc')
