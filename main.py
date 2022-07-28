@@ -235,13 +235,17 @@ async def add(ctx,name,song):
         playlists[ctx.guild.id][name].append((song,song))
 
 @client.command()
-async def delete(ctx,name,song):
+async def delete(ctx,name,*,song=None):
     if name in playlists[ctx.guild.id]:
-        for song_name,url in playlists[ctx.guild.id][name]:
-            if song_name == song:
-                playlists[ctx.guild.id][name].remove(song,url)
-                return
-        await ctx.send(f"The playlist called {name} doesn't have {song}.")
+        if song == None:
+            playlists[ctx.guild.id].pop(name)
+            await ctx.send(f"The playlist called {name} is deleted.")
+        else:
+            for song_name,url in playlists[ctx.guild.id][name]:
+                if song_name == song:
+                    playlists[ctx.guild.id][name].remove(song,url)
+                    return
+            await ctx.send(f"The playlist called {name} doesn't have {song}.")
     else:
         await ctx.send(f"The playlist called {name} doesn't exist.")
 
