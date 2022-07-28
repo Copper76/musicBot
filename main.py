@@ -142,6 +142,7 @@ async def play(ctx, *, song=None):
                     await ctx.send(f"OK, {song} has been queued at position {len(song_queue[ctx.guild.id]) + 1}")
                 else:
                     await play_song(ctx, song)
+                    await ctx.send(f"playing {song}")
 
     else:
         await ctx.send("You are not connected to a voice channel")
