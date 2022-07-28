@@ -9,12 +9,18 @@ import os
 client = commands.Bot(command_prefix="-")
 
 song_queue = {}
+loops = {}
+current_urls = {}
 
 
 async def check_queue(ctx):
     ctx.voice_client.stop()
+    if loops[ctx.guild.id]:
+        await play_song(ctx, current_urls[ctx.guild.id])
+        return
     if len(song_queue[ctx.guild.id]) > 0:
         await play_song(ctx, song_queue[ctx.guild.id][0].split('  ')[0])
+        current_urls[ctx.guild.id] = song_queue[ctx.guild.id][0].split('  ')[0]
         song_queue[ctx.guild.id].pop(0)
     else:
         await ctx.send("That was the last song, the bot lies waiting for your next command.")
@@ -45,6 +51,7 @@ async def play_song(ctx, song):
 async def join(ctx):
     if ctx.author.voice and ctx.author.voice.channel:
         song_queue[ctx.guild.id] = []
+        loops[ctx.guild.id] = False
         voiceChannel = ctx.author.voice.channel
         if ctx.voice_client != None:
             await ctx.voice_client.disconnect()
@@ -136,6 +143,7 @@ async def play(ctx, *, song=None):
                 else:
                     await play_song(ctx, song['webpage_url'])
                     await ctx.send(f"playing {song['webpage_url']}")
+                    current_urls[ctx.guild.id] = song['webpage_url']
             else:
                 if ctx.voice_client.source:
                     song_queue[ctx.guild.id].append(f"{song}")
@@ -143,6 +151,7 @@ async def play(ctx, *, song=None):
                 else:
                     await play_song(ctx, song)
                     await ctx.send(f"playing {song}")
+                    current_urls[ctx.guild.id] = song
 
     else:
         await ctx.send("You are not connected to a voice channel")
@@ -180,6 +189,10 @@ async def shuffle(ctx):
                 embed.description += f"{i} {url}\n"
                 i += 1
             await ctx.send(embed=embed)
+
+@client.command()
+async def loop(ctx):
+    loops[ctx.guild.id] = not loops[ctx.guild.id]
 
 
 client.run('Nzg1MjczMzUzNzQwNjE1NzM0.GcjwF3.E1c0s-BR6Lp81-GbJ85oJJ2Jz1VUhtG4LJ9jVc')
