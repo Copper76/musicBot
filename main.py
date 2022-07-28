@@ -11,7 +11,7 @@ client = commands.Bot(command_prefix="-")
 song_queue = {}
 loops = {}
 current_urls = {}
-playlists = {}
+# playlists = {}
 
 
 async def check_queue(ctx):
@@ -201,65 +201,65 @@ async def loop(ctx):
     else:
         await ctx.send("The time loop is now broken")
 
-@client.command()
-async def list(ctx,name):
-    if name in playlists[ctx.guild.id]:
-        embed = discord.Embed(title=name, description="", colour=discord.Colour.dark_gold())
-        i = 1
-        for url in playlists[ctx.guild.id][name]:
-            embed.description += f"{i} {url}\n"
-            i += 1
-        await ctx.send(embed=embed)
-    else:
-        await ctx.send(f"The playlist called {name} doesn't exist.")
-
-@client.command()
-async def add(ctx,name,song):
-    if name not in playlists[ctx.guild.id]:
-        playlists[ctx.guild.id][name] = []
-    url = True
-    if not "youtube.com/watch?" in song or "https://youtu.be/" in song:
-        await ctx.send("searching for your song")
-
-        result = await search_song(1, song)
-
-        if not result:
-            return await ctx.send("There is no such song")
-
-        song = result[0]
-        url = False
-
-    if not url:
-        playlists[ctx.guild.id][name].append((song['title'],song['webpage_url']))
-    else:
-        playlists[ctx.guild.id][name].append((song,song))
-
-@client.command()
-async def delete(ctx,name,*,song=None):
-    if name in playlists[ctx.guild.id]:
-        if song == None:
-            playlists[ctx.guild.id].pop(name)
-            await ctx.send(f"The playlist called {name} is deleted.")
-        else:
-            for song_name,url in playlists[ctx.guild.id][name]:
-                if song_name == song:
-                    playlists[ctx.guild.id][name].remove(song,url)
-                    return
-            await ctx.send(f"The playlist called {name} doesn't have {song}.")
-    else:
-        await ctx.send(f"The playlist called {name} doesn't exist.")
-
-@client.command()
-async def load(ctx, name):
-    if name in playlists[ctx.guild.id]:
-        if len(playlists[ctx.guild.id][name]) > 0:
-            for song in playlists[ctx.guild.id][name]:
-                song_queue[ctx.guild.id].append(song)
-                await ctx.send(f"The playlist called {name} has been loaded into the queue.")
-        else:
-            await ctx.send(f"The playlist called {name} is empty.")
-    else:
-        await ctx.send(f"The playlist called {name} doesn't exist.")
+# @client.command()
+# async def list(ctx,name):
+#     if name in playlists[ctx.guild.id]:
+#         embed = discord.Embed(title=name, description="", colour=discord.Colour.dark_gold())
+#         i = 1
+#         for url in playlists[ctx.guild.id][name]:
+#             embed.description += f"{i} {url}\n"
+#             i += 1
+#         await ctx.send(embed=embed)
+#     else:
+#         await ctx.send(f"The playlist called {name} doesn't exist.")
+#
+# @client.command()
+# async def add(ctx,name,song):
+#     if name not in playlists[ctx.guild.id]:
+#         playlists[ctx.guild.id][name] = []
+#     url = True
+#     if not "youtube.com/watch?" in song or "https://youtu.be/" in song:
+#         await ctx.send("searching for your song")
+#
+#         result = await search_song(1, song)
+#
+#         if not result:
+#             return await ctx.send("There is no such song")
+#
+#         song = result[0]
+#         url = False
+#
+#     if not url:
+#         playlists[ctx.guild.id][name].append((song['title'],song['webpage_url']))
+#     else:
+#         playlists[ctx.guild.id][name].append((song,song))
+#
+# @client.command()
+# async def delete(ctx,name,*,song=None):
+#     if name in playlists[ctx.guild.id]:
+#         if song == None:
+#             playlists[ctx.guild.id].pop(name)
+#             await ctx.send(f"The playlist called {name} is deleted.")
+#         else:
+#             for song_name,url in playlists[ctx.guild.id][name]:
+#                 if song_name == song:
+#                     playlists[ctx.guild.id][name].remove(song,url)
+#                     return
+#             await ctx.send(f"The playlist called {name} doesn't have {song}.")
+#     else:
+#         await ctx.send(f"The playlist called {name} doesn't exist.")
+#
+# @client.command()
+# async def load(ctx, name):
+#     if name in playlists[ctx.guild.id]:
+#         if len(playlists[ctx.guild.id][name]) > 0:
+#             for song in playlists[ctx.guild.id][name]:
+#                 song_queue[ctx.guild.id].append(song)
+#                 await ctx.send(f"The playlist called {name} has been loaded into the queue.")
+#         else:
+#             await ctx.send(f"The playlist called {name} is empty.")
+#     else:
+#         await ctx.send(f"The playlist called {name} doesn't exist.")
 
 
 client.run('Nzg1MjczMzUzNzQwNjE1NzM0.GcjwF3.E1c0s-BR6Lp81-GbJ85oJJ2Jz1VUhtG4LJ9jVc')
