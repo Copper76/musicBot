@@ -53,8 +53,8 @@ async def join(ctx):
     if ctx.author.voice and ctx.author.voice.channel:
         song_queue[ctx.guild.id] = []
         loops[ctx.guild.id] = False
-        if not playlists[ctx.guild.id]:
-            playlists[ctx.guild.id] = {}
+        # if not playlists[ctx.guild.id]:
+        #     playlists[ctx.guild.id] = {}
         voiceChannel = ctx.author.voice.channel
         if ctx.voice_client != None:
             await ctx.voice_client.disconnect()
