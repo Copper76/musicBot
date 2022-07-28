@@ -100,6 +100,8 @@ async def play(ctx, *, song=None):
         if song == None:
             return await ctx.send("Please specify a song to play.")
 
+        name = False
+
         if "youtube.com/playlist?" in song:
             pass
             # result = await get_playlist(song, get_url=True)
@@ -125,13 +127,21 @@ async def play(ctx, *, song=None):
                     return await ctx.send("There is no such song")
 
                 song = result[0]
+                name = True
 
-            if ctx.voice_client.source:
-                song_queue[ctx.guild.id].append(f"{song['webpage_url']}  {song['title']}")
-                await ctx.send(f"OK, {song['webpage_url']} has been queued at position {len(song_queue[ctx.guild.id]) + 1}")
+            if name:
+                if ctx.voice_client.source:
+                    song_queue[ctx.guild.id].append(f"{song['webpage_url']}  {song['title']}")
+                    await ctx.send(f"OK, {song['webpage_url']} has been queued at position {len(song_queue[ctx.guild.id]) + 1}")
+                else:
+                    await play_song(ctx, song['webpage_url'])
+                    await ctx.send(f"playing {song['webpage_url']}")
             else:
-                await play_song(ctx, song['webpage_url'])
-                await ctx.send(f"playing {song['webpage_url']}")
+                if ctx.voice_client.source:
+                    song_queue[ctx.guild.id].append(f"{song}")
+                    await ctx.send(f"OK, {song} has been queued at position {len(song_queue[ctx.guild.id]) + 1}")
+                else:
+                    await play_song(ctx, song)
 
     else:
         await ctx.send("You are not connected to a voice channel")
