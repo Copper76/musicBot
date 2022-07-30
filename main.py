@@ -45,7 +45,7 @@ async def play_song(ctx, song):
     url = pafy.new(song).getbestaudio().url
     ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(url)),
                           after=lambda error: client.loop.create_task(check_queue(ctx)))
-    ctx.voice_client.source.volume = 0.5
+    ctx.voice_client.source.volume = 0.3
 
 
 @client.command()
