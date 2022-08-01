@@ -18,13 +18,13 @@ async def check_queue(ctx):
     ctx.voice_client.stop()
     if loops[ctx.guild.id]:
         await play_song(ctx, current_urls[ctx.guild.id])
-        return
-    if len(song_queue[ctx.guild.id]) > 0:
-        await play_song(ctx, song_queue[ctx.guild.id][0].split('  ')[0])
-        current_urls[ctx.guild.id] = song_queue[ctx.guild.id][0].split('  ')[0]
-        song_queue[ctx.guild.id].pop(0)
     else:
-        await ctx.send("That was the last song, the bot lies waiting for your next command.")
+        if len(song_queue[ctx.guild.id]) > 0:
+            await play_song(ctx, song_queue[ctx.guild.id][0].split('  ')[0])
+            current_urls[ctx.guild.id] = song_queue[ctx.guild.id][0].split('  ')[0]
+            song_queue[ctx.guild.id].pop(0)
+        else:
+            await ctx.send("That was the last song, the bot lies waiting for your next command.")
 
 
 async def search_song(amount, song, get_url=False):
@@ -200,6 +200,21 @@ async def loop(ctx):
         await ctx.send("We will now loop the current song")
     else:
         await ctx.send("The time loop is now broken")
+
+@client.event
+async def on_voice_state_update(member, before, after):
+    if before.channel is None:
+        voice = after.channel.guild.voice_client
+        time = 0
+        while True:
+            await asyncio.sleep(1)
+            time = time + 1
+            if voice.is_playing() and not voice.is_paused():
+                time = 0
+            if time == 300:
+                await voice.disconnect()
+            if not voice.is_connected():
+                break
 
 # @client.command()
 # async def list(ctx,name):
