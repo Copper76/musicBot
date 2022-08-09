@@ -209,7 +209,7 @@ async def on_voice_state_update(member, before, after):
         while True:
             await asyncio.sleep(1)
             time = time + 1
-            if voice.is_playing() and not voice.is_paused():
+            if voice.is_playing() and voice.is_paused():
                 time = 0
             if time == 300:
                 await voice.disconnect()
